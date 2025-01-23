@@ -17,7 +17,50 @@ export default async function handler(req, res) {
     const data = [['Original Text', 'Translation']];
     const processedTexts = new Set();
 
-    $('*').each((index, element) => {
+    // $('*').each((index, element) => {
+    //     const tag = $(element);
+
+    //     // Пропускаем теги <script>
+    //     if (element.type === 'tag' && element.tagName === 'script') {
+    //         return;
+    //     }
+
+    //     // Извлекаем текстовые узлы
+    //     if (element.type === 'text' && element.data) {
+    //         const text = element.data.trim().replace(/\s+/g, ' ');
+    //         if (text && !processedTexts.has(text)) {
+    //             data.push([text, '']);
+    //             processedTexts.add(text);
+    //         }
+    //     }
+
+    //     // Извлекаем атрибуты
+    //     // ['alt', 'title', 'placeholder'].forEach(attr => {
+    //     //     const attrValue = tag.attr(attr)?.trim().replace(/\s+/g, ' ');
+    //     //     if (attrValue && !processedTexts.has(attrValue)) {
+    //     //         data.push([attrValue, '']);
+    //     //         processedTexts.add(attrValue);
+    //     //     }
+    //     // });
+    //     if (element.type === 'tag') {
+    //         ['alt', 'title', 'placeholder'].forEach(attr => {
+    //             const attrValue = tag.attr(attr)?.trim().replace(/\s+/g, ' '); // Удаляем лишние пробелы
+    //             if (attrValue && !processedTexts.has(attrValue)) {
+    //                 data.push([attrValue, '']); // Добавляем атрибут в Excel
+    //                 processedTexts.add(attrValue);
+    //             }
+    //         });
+
+    //         // Обходим дочерние узлы
+    //         let childIndex = 0;
+    //         tag.contents().each((_, child) => {
+    //             traverseAndExtract(child, `${index}_${childIndex}`);
+    //             childIndex++;
+    //         });
+    //     }
+    // });
+
+    const traverseAndExtract = (element, index = 0) => {
         const tag = $(element);
 
         // Пропускаем теги <script>
@@ -27,22 +70,34 @@ export default async function handler(req, res) {
 
         // Извлекаем текстовые узлы
         if (element.type === 'text' && element.data) {
-            const text = element.data.trim().replace(/\s+/g, ' ');
+            const text = element.data.trim().replace(/\s+/g, ' '); // Удаляем лишние пробелы
             if (text && !processedTexts.has(text)) {
-                data.push([text, '']);
+                data.push([text, '']); // Добавляем текст в Excel
                 processedTexts.add(text);
             }
         }
 
         // Извлекаем атрибуты
-        ['alt', 'title', 'placeholder'].forEach(attr => {
-            const attrValue = tag.attr(attr)?.trim().replace(/\s+/g, ' ');
-            if (attrValue && !processedTexts.has(attrValue)) {
-                data.push([attrValue, '']);
-                processedTexts.add(attrValue);
-            }
-        });
-    });
+        if (element.type === 'tag') {
+            ['alt', 'title', 'placeholder'].forEach(attr => {
+                const attrValue = tag.attr(attr)?.trim().replace(/\s+/g, ' '); // Удаляем лишние пробелы
+                if (attrValue && !processedTexts.has(attrValue)) {
+                    data.push([attrValue, '']); // Добавляем атрибут в Excel
+                    processedTexts.add(attrValue);
+                }
+            });
+
+            // Обходим дочерние узлы
+            let childIndex = 0;
+            tag.contents().each((_, child) => {
+                traverseAndExtract(child, `${index}_${childIndex}`);
+                childIndex++;
+            });
+        }
+    };
+
+    // Обходим весь DOM
+    $('*').each((index, element) => traverseAndExtract(element, index));
 
     // Создаём Excel-файл
     const workbook = XLSX.utils.book_new();
