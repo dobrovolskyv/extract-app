@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>HTML to Excel Extractor</title>
+</head>
+
+<body>
+	<h1>HTML to Excel Extractor</h1>
+
+	<label for="html-file">Загрузите HTML-файл:</label>
+	<input type="file" id="html-file" accept=".html" />
+	<button id="process-btn">Обработать</button>
+
+	<div id="download-section" style="display: none; margin-top: 20px;">
+		<h3>Скачайте ваш файл:</h3>
+		<a id="download-link" href="#" download="translations.xlsx">Скачать Excel</a>
+	</div>
+
+	<script>
+		const processButton = document.getElementById('process-btn');
+		const downloadSection = document.getElementById('download-section');
+		const downloadLink = document.getElementById('download-link');
+
+		// Слушатель нажатия кнопки "Обработать"
+		processButton.addEventListener('click', async () => {
+			const fileInput = document.getElementById('html-file');
+			if (!fileInput.files.length) {
+				alert('Пожалуйста, загрузите HTML-файл!');
+				return;
+			}
+
+			const file = fileInput.files[0];
+			const reader = new FileReader();
+
+			reader.onload = async () => {
+				const htmlContent = reader.result;
+
+				// Отправляем HTML на серверлес-функцию
+				const response = await fetch('/.netlify/functions/extract', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ html: htmlContent }),
+				});
+
+				if (response.ok) {
+					const blob = await response.blob();
+					const url = URL.createObjectURL(blob);
+
+					// Отображаем ссылку для скачивания
+					downloadLink.href = url;
+					downloadSection.style.display = 'block';
+				} else {
+					alert('Ошибка обработки файла на сервере');
+				}
+			};
+
+			reader.readAsText(file);
+		});
+	</script>
+</body>
+
+</html>
