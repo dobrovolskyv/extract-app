@@ -107,3 +107,6 @@ input:is([type="button"], [type="submit"], [type="reset"]), input[type="file"]::
     padding: 4px 10px;
     border-radius: 10px;
 }
+.download__title{
+    margin-bottom: 10px;
+}
