@@ -4,20 +4,36 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./style.css">
 	<title>HTML to Excel Extractor</title>
 </head>
 
 <body>
-	<h1>HTML to Excel Extractor</h1>
-
-	<label for="html-file">Загрузите HTML-файл:</label>
-	<input type="file" id="html-file" accept=".html" />
-	<button id="process-btn">Обработать</button>
-
-	<div id="download-section" style="display: none; margin-top: 20px;">
-		<h3>Скачайте ваш файл:</h3>
-		<a id="download-link" href="#" download="translations.xlsx">Скачать Excel</a>
+	<div class="nav__wrapper">
+		<nav class="nav">
+			<h1 class="title">HTML to Excel Extractor <span class="title__span">v 0.1</span></h1>
+		</nav>
 	</div>
+
+	<div class="container">
+
+		<div class="form">
+			<label for="html-file" class="input-file">Загрузите HTML-файл:
+				<input type="file" id="html-file" accept=".html" multiple />
+
+			</label>
+
+			<button id="process-btn" class="btn">Обработать</button>
+		</div>
+
+
+
+		<div id="download-section" style="display: none; margin-top: 20px;">
+			<h3>Скачайте ваш файл:</h3>
+			<a class="btn" id="download-link" href="#" download="translations.xlsx">Скачать Excel</a>
+		</div>
+	</div>
+
 
 	<script>
 		const processButton = document.getElementById('process-btn');
