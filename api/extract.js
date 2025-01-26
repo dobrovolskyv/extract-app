@@ -6,17 +6,42 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Метод не поддерживается. Используйте POST.' });
     }
 
-    const htmlContent = req.body.html; // HTML-файл передаётся как текст
+    let htmlContent;
 
+    // Проверяем, что было передано: HTML или URL
+    if (req.body.html) {
+        htmlContent = req.body.html; // HTML-файл передан напрямую
+    } else if (req.body.url) {
+        try {
+            console.log(`Получена ссылка: ${req.body.url}`);
+
+            // Загружаем HTML по ссылке
+            const response = await fetch(req.body.url);
+            if (!response.ok) {
+                console.error(`Ошибка загрузки HTML: ${response.status} ${response.statusText}`);
+                return res.status(400).json({ error: 'Ошибка загрузки HTML по указанной ссылке.' });
+            }
+            htmlContent = await response.text();
+
+            console.log(`Загруженный HTML (первые 500 символов): ${htmlContent.slice(0, 500)}`);
+        } catch (error) {
+            console.error(`Ошибка при запросе HTML по URL: ${error.message}`);
+            return res.status(500).json({ error: 'Ошибка при запросе HTML по URL.', details: error.message });
+        }
+    } else {
+        return res.status(400).json({ error: 'Не предоставлен HTML или URL.' });
+    }
+
+    // Если HTML пустой, возвращаем ошибку
     if (!htmlContent) {
-        return res.status(400).json({ error: 'HTML-файл не предоставлен.' });
+        console.error('HTML-контент пустой или недоступен.');
+        return res.status(400).json({ error: 'HTML-контент пустой или недоступен.' });
     }
 
     // Парсинг HTML и извлечение текстов
     const $ = cheerio.load(htmlContent);
     const data = [['Original Text', 'Translation']];
     const processedTexts = new Set();
-
 
     const traverseAndExtract = (element, index = 0) => {
         const tag = $(element);
