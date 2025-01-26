@@ -59,7 +59,7 @@
 				<button id="process-btn" class="btn">Обработать</button>
 			</div>
 
-			<div id="download-section" style="display: none; margin-top: 20px;">
+			<div id="download-section" style="margin-top: 20px; opacity: 0;">
 				<h3 class="download__title">Скачайте ваш файл:</h3>
 				<a class="btn" id="download-link" href="#" download="content.xlsx">Скачать Excel</a>
 			</div>
@@ -151,7 +151,7 @@
 				const blob = await response.blob();
 				const url = URL.createObjectURL(blob);
 				downloadLink.href = url;
-				downloadSection.style.display = 'block';
+				downloadSection.style.opacity = 1;
 			} else {
 				alert('Ошибка обработки файла на сервере.');
 			}
