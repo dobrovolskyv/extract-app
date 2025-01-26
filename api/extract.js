@@ -1,36 +1,22 @@
 const XLSX = require('xlsx');
 const cheerio = require('cheerio');
-const fetch = require('node-fetch'); // Для загрузки HTML по ссылке
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Метод не поддерживается. Используйте POST.' });
     }
 
-    let htmlContent;
+    const htmlContent = req.body.html; // HTML-файл передаётся как текст
 
-    // Проверяем, что было передано: HTML или URL
-    if (req.body.html) {
-        htmlContent = req.body.html; // HTML-файл передан напрямую
-    } else if (req.body.url) {
-        try {
-            // Загружаем HTML по ссылке
-            const response = await fetch(req.body.url);
-            if (!response.ok) {
-                return res.status(400).json({ error: 'Ошибка загрузки HTML по указанной ссылке.' });
-            }
-            htmlContent = await response.text();
-        } catch (error) {
-            return res.status(500).json({ error: 'Ошибка при запросе HTML по URL.', details: error.message });
-        }
-    } else {
-        return res.status(400).json({ error: 'Не предоставлен HTML или URL.' });
+    if (!htmlContent) {
+        return res.status(400).json({ error: 'HTML-файл не предоставлен.' });
     }
 
     // Парсинг HTML и извлечение текстов
     const $ = cheerio.load(htmlContent);
     const data = [['Original Text', 'Translation']];
     const processedTexts = new Set();
+
 
     const traverseAndExtract = (element, index = 0) => {
         const tag = $(element);
