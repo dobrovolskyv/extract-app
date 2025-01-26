@@ -4,38 +4,104 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description"
+		content="HTML to Excel Extractor — это мощное приложение, которое позволяет легко и быстро извлекать текстовые данные с веб-сайтов и преобразовывать их в удобный формат Excel. Оно идеально подходит для арбитражных команд, маркетологов и исследователей, которые нуждаются в эффективном парсинге контента для анализа и использования в своих проектах." />
 	<link rel="stylesheet" href="./style.css">
 	<title>HTML to Excel Extractor</title>
+
+	<!-- Yandex.Metrika counter -->
+	<script type="text/javascript">
+		(function (m, e, t, r, i, k, a) {
+			m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+			m[i].l = 1 * new Date();
+			for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+			k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+		})
+			(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+		ym(99664551, "init", {
+			clickmap: true,
+			trackLinks: true,
+			accurateTrackBounce: true
+		});
+	</script>
+	<noscript>
+		<div><img src="https://mc.yandex.ru/watch/99664551" style="position:absolute; left:-9999px;" alt="" /></div>
+	</noscript>
+	<!-- /Yandex.Metrika counter -->
 </head>
 
 <body>
-	<div class="nav__wrapper">
+	<header class="nav__wrapper">
 		<nav class="nav">
-			<h1 class="title">HTML to Excel Extractor <span class="title__span">v 0.2</span></h1>
+			<h1 class="title">HTML to Excel Extractor <span class="title__span">v 0.3</span></h1>
+			<!-- <p>HTML to Excel Extractor — это мощное приложение, которое позволяет легко и быстро извлекать текстовые
+				данные с веб-сайтов и преобразовывать их в удобный формат Excel. Оно идеально подходит для арбитражных
+				команд, маркетологов и исследователей, которые нуждаются в эффективном парсинге контента для анализа и
+				использования в своих проектах.</p> -->
 		</nav>
-	</div>
+	</header>
 
-	<div class="container">
+	<main class="container">
+		<section>
+			<div class="form">
+				<label for="html-file" class="input-file">Загрузите HTML-файл:
+					<input type="file" id="html-file" accept=".html" multiple />
+				</label>
 
-		<div class="form">
-			<label for="html-file" class="input-file">Загрузите HTML-файл:
-				<input type="file" id="html-file" accept=".html" multiple />
-			</label>
+				<div class="url" style="margin-top: 20px;">
+					<h3 class="url__title">Загрузка через ссылку:</h3>
+					<!-- <label class="url__label" for="url-input">Введите URL:</label> -->
+					<input class="url__input" type="url" id="url-input" placeholder="Вставьте ссылку"
+						style="width: 100%;" />
+				</div>
 
-			<div class="url" style="margin-top: 20px;">
-				<h3 class="url__title">Загрузка через ссылку:</h3>
-				<!-- <label class="url__label" for="url-input">Введите URL:</label> -->
-				<input class="url__input" type="url" id="url-input" placeholder="Вставьте ссылку" style="width: 100%;" />
+				<button id="process-btn" class="btn">Обработать</button>
 			</div>
 
-			<button id="process-btn" class="btn">Обработать</button>
-		</div>
+			<div id="download-section" style="display: none; margin-top: 20px;">
+				<h3 class="download__title">Скачайте ваш файл:</h3>
+				<a class="btn" id="download-link" href="#" download="content.xlsx">Скачать Excel</a>
+			</div>
+		</section>
 
-		<div id="download-section" style="display: none; margin-top: 20px;">
-			<h3 class="download__title">Скачайте ваш файл:</h3>
-			<a class="btn" id="download-link" href="#" download="content.xlsx">Скачать Excel</a>
+		<section class="use">
+			<h2 class="use__title">Как пользоваться приложением:</h2>
+			<div class="use__wrapper">
+				<div class="use__contentbox">
+					<h3 class="use__contentbox-title">Шаг 1: Загрузка HTML-файла</h3>
+					<ul class="use__list">
+						<li class="use__item">Перейдите на главную страницу приложения.</li>
+						<li class="use__item">Выберите опцию загрузки HTML-файла и выберите файл на вашем компьютере.
+						</li>
+					</ul>
+				</div>
+				<div class="use__contentbox">
+					<h3 class="use__contentbox-title">Шаг 2: Загрузка через ссылку</h3>
+					<ul class="use__list">
+						<li class="use__item">Если у вас есть URL-адрес веб-страницы, вы можете вставить его в
+							соответствующее поле.</li>
+						<li class="use__item">Нажмите на кнопку "Обработать", чтобы начать извлечение данных.</li>
+					</ul>
+				</div>
+				<div class="use__contentbox">
+					<h3 class="use__contentbox-title">Шаг 3: Скачивание файла</h3>
+					<ul class="use__list">
+						<li class="use__item">После завершения обработки вы увидите кнопку "Скачать Excel".</li>
+						<li class="use__item">Нажмите на неё, чтобы загрузить файл в формате Excel на свой компьютер.
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+
+	</main>
+	<!-- <div class="footer">
+		<div class="container">
+			2025
 		</div>
-	</div>
+	</div> -->
 
 
 	<script>
