@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     // Генерируем файл и отправляем в виде buffer
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
 
-    res.setHeader('Content-Disposition', 'attachment; filename="translations.xlsx"');
+    res.setHeader('Content-Disposition', 'attachment; filename="content.xlsx"');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     return res.status(200).send(excelBuffer);
 }
