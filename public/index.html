@@ -20,8 +20,13 @@
 		<div class="form">
 			<label for="html-file" class="input-file">Загрузите HTML-файл:
 				<input type="file" id="html-file" accept=".html" multiple />
-
 			</label>
+
+			<div class="url" style="margin-top: 20px;">
+				<h3 class="url__title">Загрузка через ссылку:</h3>
+				<!-- <label class="url__label" for="url-input">Введите URL:</label> -->
+				<input class="url__input" type="url" id="url-input" placeholder="Вставьте ссылку" style="width: 100%;" />
+			</div>
 
 			<button id="process-btn" class="btn">Обработать</button>
 		</div>
@@ -41,38 +46,68 @@
 		// Слушатель нажатия кнопки "Обработать"
 		processButton.addEventListener('click', async () => {
 			const fileInput = document.getElementById('html-file');
-			if (!fileInput.files.length) {
-				alert('Пожалуйста, загрузите HTML-файл!');
-				return;
+			const urlInput = document.getElementById('url-input');
+
+			// Если пользователь загрузил файл
+			if (fileInput.files.length) {
+				const file = fileInput.files[0];
+				const reader = new FileReader();
+
+				reader.onload = async () => {
+					const htmlContent = reader.result;
+
+					// Отправляем файл на сервер
+					await processHTML(htmlContent);
+				};
+
+				reader.readAsText(file);
 			}
+			// Если пользователь ввёл ссылку
+			else if (urlInput.value.trim()) {
+				const url = urlInput.value.trim();
 
-			const file = fileInput.files[0];
-			const reader = new FileReader();
-
-			reader.onload = async () => {
-				const htmlContent = reader.result;
-
-				// Отправляем HTML на серверлес-функцию
-				const response = await fetch('/api/extract', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ html: htmlContent }),
-				});
-
-				if (response.ok) {
-					const blob = await response.blob();
-					const url = URL.createObjectURL(blob);
-
-					// Отображаем ссылку для скачивания
-					downloadLink.href = url;
-					downloadSection.style.display = 'block';
-				} else {
-					alert('Ошибка обработки файла на сервере');
-				}
-			};
-
-			reader.readAsText(file);
+				// Отправляем ссылку на сервер
+				await processURL(url);
+			} else {
+				alert('Пожалуйста, загрузите файл или введите URL.');
+			}
 		});
+
+		// Обработка HTML-контента
+		async function processHTML(htmlContent) {
+			const response = await fetch('/.netlify/functions/extract', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ html: htmlContent }),
+			});
+
+			if (response.ok) {
+				const blob = await response.blob();
+				const url = URL.createObjectURL(blob);
+				downloadLink.href = url;
+				downloadSection.style.display = 'block';
+			} else {
+				alert('Ошибка обработки файла на сервере.');
+			}
+		}
+
+		// Обработка ссылки
+		async function processURL(url) {
+			const response = await fetch('/.netlify/functions/extract', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ url }),
+			});
+
+			if (response.ok) {
+				const blob = await response.blob();
+				const url = URL.createObjectURL(blob);
+				downloadLink.href = url;
+				downloadSection.style.display = 'block';
+			} else {
+				alert('Ошибка обработки ссылки на сервере.');
+			}
+		}
 	</script>
 </body>
 
