@@ -1,14 +1,22 @@
-*,*::before,*::after{
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-a{
+
+a {
     color: inherit;
     text-decoration: none;
 }
-body{
-    background-color: rgba(15,23,42);
+
+/* ul,li{
+    list-style-type: none;
+} */
+
+body {
+    background-color: rgba(15, 23, 42);
     color: white;
 }
 
@@ -18,7 +26,7 @@ body{
     padding: 0 15px;
 }
 
-.nav__wrapper{
+.nav__wrapper {
     max-width: 100%;
     display: flex;
     justify-content: center;
@@ -28,39 +36,45 @@ body{
     margin-bottom: 20px;
 }
 
-.title{
+.nav {
+    max-width: 350px;
+}
+
+.title {
     font-size: 28px;
-    line-height: 110%;  
+    line-height: 110%;
     position: relative;
 }
-.title__span{
+
+.title__span {
     font-size: 14px;
     position: absolute;
     top: 0;
     right: -60px;
-    background-color: rgb(56,189,248,0.1);
-    color: rgba(56,189,248,0.25);
+    background-color: rgb(56, 189, 248, 0.1);
+    color: rgba(56, 189, 248, 0.25);
     border-radius: 10px;
     border: 1px solid white;
     padding: 0px 8px
 }
 
-.form{
+.form {
     display: flex;
-    gap:10px;
+    gap: 10px;
     font-size: 20px;
     justify-content: space-around;
+    flex-direction: column;
 }
 
 .input-file {
-	position: relative;
-	display: flex;
-    justify-content: space-between;
+    position: relative;
+    display: flex;
+    /* justify-content: space-between; */
     align-items: center;
-    gap: 20px
-  
-
+    gap: 20px;
+    font-weight: bold;
 }
+
 /* .input-file input[type=file] {
 	position: absolute;
 	z-index: -1;
@@ -71,23 +85,27 @@ body{
 }
   */
 /* Focus */
-.input-file input[type=file]:focus + .input-file-btn {
-	box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+.input-file input[type=file]:focus+.input-file-btn {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
 }
- 
+
 /* Hover/active */
 .input-file:hover .input-file-btn {
-	background-color: #be6059;
+    background-color: #be6059;
 }
+
 .input-file:active .input-file-btn {
-	background-color: #702e62;
+    background-color: #702e62;
 }
- 
+
 /* Disabled */
-.input-file input[type=file]:disabled + .input-file-btn {
-	background-color: #eeeeee;
+.input-file input[type=file]:disabled+.input-file-btn {
+    background-color: #eeeeee;
 }
-input:is([type="button"], [type="submit"], [type="reset"]), input[type="file"]::file-selector-button, button {
+
+input:is([type="button"], [type="submit"], [type="reset"]),
+input[type="file"]::file-selector-button,
+button {
     outline: none;
     border: none;
     background-color: transparent;
@@ -97,7 +115,8 @@ input:is([type="button"], [type="submit"], [type="reset"]), input[type="file"]::
     padding: 4px 10px;
     border-radius: 10px;
 }
-.btn{
+
+.btn {
     outline: none;
     border: none;
     background-color: transparent;
@@ -106,7 +125,113 @@ input:is([type="button"], [type="submit"], [type="reset"]), input[type="file"]::
     border: 1px solid rgba(255, 255, 255, 0.127);
     padding: 4px 10px;
     border-radius: 10px;
+    cursor: pointer;
+    height: 40px;
 }
-.download__title{
+
+.btn:hover {
+    background-color: rgba(14, 165, 233, 1);
+    color: black;
+}
+
+.download__title {
     margin-bottom: 10px;
+}
+
+.url__input {
+    margin: 20px 0;
+    height: 40px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.127);
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+}
+
+.url__input:placeholder-shown {
+    font-size: 12px;
+
+}
+
+.use {
+    margin-top: 200px;
+}
+
+.use__title {
+    text-align: center;
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+.use__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.use__contentbox {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.127);
+    padding: 20px 40px;
+}
+
+.use__contentbox:hover {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.use__contentbox-title {
+    font-size: 22px;
+}
+
+.use__list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+}
+
+
+
+@media (width < 600px) {
+    .form {
+        flex-direction: column;
+    }
+}
+
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 18px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
