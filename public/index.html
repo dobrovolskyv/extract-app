@@ -4,25 +4,53 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./style.css">
 	<title>HTML to Excel Extractor</title>
+
+	<!-- Yandex.Metrika counter -->
+	<script type="text/javascript">
+		(function (m, e, t, r, i, k, a) {
+			m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+			m[i].l = 1 * new Date();
+			for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+			k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+		})
+			(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+		ym(99664551, "init", {
+			clickmap: true,
+			trackLinks: true,
+			accurateTrackBounce: true
+		});
+	</script>
+	<noscript>
+		<div><img src="https://mc.yandex.ru/watch/99664551" style="position:absolute; left:-9999px;" alt="" /></div>
+	</noscript>
+	<!-- /Yandex.Metrika counter -->
 </head>
 
 <body>
-	<h1>HTML to Excel Extractor</h1>
-
-	<label for="html-file">Загрузите HTML-файл:</label>
-	<input type="file" id="html-file" accept=".html" />
-	<button id="process-btn">Обработать</button>
-
-
-	<div id="preloader" class="preloader" style="display: none;">
-		<div class="spinner"></div>
-		<p>Обработка...</p>
+	<div class="nav__wrapper">
+		<nav class="nav">
+			<h1 class="title">HTML to Excel Extractor <span class="title__span">v 0.1</span></h1>
+		</nav>
 	</div>
 
-	<div id="download-section" style="display: none; margin-top: 20px;">
-		<h3>Скачайте ваш файл:</h3>
-		<a id="download-link" href="#" download="translations.xlsx">Скачать Excel</a>
+	<div class="container">
+
+		<div class="form">
+			<label for="html-file" class="input-file">Загрузите HTML-файл:
+				<input type="file" id="html-file" accept=".html" multiple />
+
+			</label>
+
+			<button id="process-btn" class="btn">Обработать</button>
+		</div>
+
+		<div id="download-section" style="display: none; margin-top: 20px;">
+			<h3 class="download__title">Скачайте ваш файл:</h3>
+			<a class="btn" id="download-link" href="#" download="translations.xlsx">Скачать Excel</a>
+		</div>
 	</div>
 
 	<!-- <script>
@@ -44,131 +72,35 @@
 		// Слушатель нажатия кнопки "Обработать"
 		processButton.addEventListener('click', async () => {
 			const fileInput = document.getElementById('html-file');
-			if (!fileInput.files.length) {
-				alert('Пожалуйста, загрузите HTML-файл!');
-				return;
-			}
-
-			const file = fileInput.files[0];
-			const formData = new FormData();
-			formData.append('htmlFile', file);
-
-			// Отправляем файл на сервер для обработки
-			const response = await fetch('/upload', {
-				method: 'POST',
-				body: formData,
-			});
-
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = URL.createObjectURL(blob);
-
-				// Сохраняем файл в LocalStorage с таймером на 1 день
-				// const expiryTime = Date.now() + 24 * 60 * 60 * 1000; // 1 день
-				// localStorage.setItem('excelFile', JSON.stringify({ url, expiryTime }));
-
-				// Отображаем ссылку для скачивания
-				downloadLink.href = url;
-				downloadSection.style.display = 'block';
-			} else {
-				alert('Ошибка обработки файла на сервере');
-			}
-		});
-
-		// Проверяем LocalStorage на наличие файла
-		// const savedFile = JSON.parse(localStorage.getItem('excelFile'));
-		// if (savedFile && savedFile.expiryTime > Date.now()) {
-		// 	downloadLink.href = savedFile.url;
-		// 	downloadSection.style.display = 'block';
-		// } else {
-		// 	localStorage.removeItem('excelFile');
-		// }
-	</script> -->
-
-	<script>
-		const processButton = document.getElementById('process-btn');
-		const downloadSection = document.getElementById('download-section');
-		const downloadLink = document.getElementById('download-link');
-		const preloader = document.getElementById('preloader');
-
-		// Функция для показа/скрытия прелоадера
-		function showPreloader() {
-			preloader.style.display = 'flex';
-		}
-
-		function hidePreloader() {
-			preloader.style.display = 'none';
-		}
-
-		// Слушатель нажатия кнопки "Обработать"
-		processButton.addEventListener('click', async () => {
-			const fileInput = document.getElementById('html-file');
 			const urlInput = document.getElementById('url-input');
 
-			// Показываем прелоадер перед началом обработки
-			showPreloader();
+			const file = fileInput.files[0];
+			const reader = new FileReader();
 
-			try {
-				if (fileInput.files.length) {
-					const file = fileInput.files[0];
-					const reader = new FileReader();
+			reader.onload = async () => {
+				const htmlContent = reader.result;
 
-					reader.onload = async () => {
-						const htmlContent = reader.result;
-						await processHTML(htmlContent);
-					};
+				// Отправляем HTML на серверлес-функцию
+				const response = await fetch('/api/extract', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ html: htmlContent }),
+				});
 
-					reader.readAsText(file);
-				} else if (urlInput.value.trim()) {
-					const url = urlInput.value.trim();
-					await processURL(url);
+				if (response.ok) {
+					const blob = await response.blob();
+					const url = URL.createObjectURL(blob);
+
+					// Отображаем ссылку для скачивания
+					downloadLink.href = url;
+					downloadSection.style.display = 'block';
 				} else {
-					alert('Пожалуйста, загрузите файл или введите URL.');
+					alert('Ошибка обработки файла на сервере');
 				}
-			} catch (error) {
-				console.error('Ошибка обработки:', error);
-				alert('Произошла ошибка. Попробуйте снова.');
-			} finally {
-				// Скрываем прелоадер после завершения обработки
-				hidePreloader();
-			}
+			};
+
+			reader.readAsText(file);
 		});
-
-		// Обработка HTML-контента
-		async function processHTML(htmlContent) {
-			const response = await fetch('/api/extract', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ html: htmlContent }),
-			});
-
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = URL.createObjectURL(blob);
-				downloadLink.href = url;
-				downloadSection.style.display = 'block';
-			} else {
-				alert('Ошибка обработки файла на сервере.');
-			}
-		}
-
-		// Обработка ссылки
-		async function processURL(url) {
-			const response = await fetch('/api/extract', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ url }),
-			});
-
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = URL.createObjectURL(blob);
-				downloadLink.href = url;
-				downloadSection.style.display = 'block';
-			} else {
-				alert('Ошибка обработки ссылки на сервере.');
-			}
-		}
 	</script>
 
 </body>
